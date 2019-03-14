@@ -40,7 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
     CounterStorage.readNotes().then((List<String> value) {
       setState(() {
         if (value != null) {
-          globals.notes = value.reversed.toList();
+          globals.notes = value;
         }
       });
     });

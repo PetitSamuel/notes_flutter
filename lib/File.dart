@@ -35,7 +35,6 @@ class CounterStorage {
       String contents = await file.readAsString();
       print(contents);
       contents.replaceFirst("$s\n", "");
-      print(contents);
 
       file.writeAsString(contents, mode: FileMode.write);
       return contents.split("\n");
