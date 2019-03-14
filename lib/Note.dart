@@ -3,6 +3,8 @@ import 'globals.dart' as globals;
 import 'dart:async';
 import 'dart:io';
 import 'File.dart';
+import 'SQL.dart';
+import 'model.dart';
 
 class FormScreen extends StatefulWidget {
   @override
@@ -56,7 +58,8 @@ class _FormScreen extends State<FormScreen> {
     if (globals.currentNote != "") {
       globals.notes = await CounterStorage.removeNote(globals.currentNote);
     }
-    await _addReviewToFile();
+    Note note = new Note(id: 0, text: _noteController.text, date: DateTime.now());
+    await SQL.db.insertNote(note);
     Navigator.pop(context);
   }
 

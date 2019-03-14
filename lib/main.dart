@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'Note.dart';
 import 'globals.dart' as globals;
-import 'File.dart';
+import 'SQL.dart';
+import 'model.dart';
 
 
 void main() => runApp(MyApp());
@@ -34,28 +35,22 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  @override
-  void initState() {
-    super.initState();
-    CounterStorage.readNotes().then((List<String> value) {
-      setState(() {
-        if (value != null) {
-          globals.notes = value;
-        }
-      });
-    });
-  }
+  List<Note> notes;
 
   final _biggerFont = const TextStyle(fontSize: 18.0);
   int count = 0;
 
+  void _loadNotes () async {
+    notes = await SQL.db.loadAllNotes();
+    print("cool");
+  }
   void _addNote() {
     globals.currentNote = "";
     Navigator.pushNamed(context, '/new');
   }
   Widget _getNotes() {
-    List<String> _notes = (globals.notes == null) ? null : globals.notes.reversed.toList();
-    if (_notes == null || _notes.isEmpty) {
+    _loadNotes();
+    if (notes == null || notes.isEmpty) {
       return null;
     }
     return ListView.builder(
@@ -64,30 +59,31 @@ class _MyHomePageState extends State<MyHomePage> {
         if (i.isOdd) return Divider(); /*2*/
 
         final index = i ~/ 2; /*3*/
-        if (index >= _notes.length) {
+        if (index >= notes.length) {
           return null;
           //_notes.addAll(generateWordPairs().take(10)); /*4*/
         }
-        return _buildRow(_notes[index]);
+        return _buildRow(notes[index]);
       }
     );
   }
 
   // #docregion _buildRow
-  Widget _buildRow(String note) {
-    if (note.isEmpty) {
+  Widget _buildRow(Note note) {
+    if (note.text.isEmpty) {
       return null;
     }
     return ListTile(
       title: Text(
-        note,
+        note.text,
         style: _biggerFont,
       ),
-      onTap: () => tappedNote(note),
+      onTap: () => tappedNote(note.text),
     );
   }
 
-  void tappedNote(String note) {
+  void tappedNote(String note) async {
+    await _loadNotes();
     globals.currentNote = note;
     Navigator.pushNamed(context, '/new');
   }

@@ -28,7 +28,7 @@ class Note {
     );
 
     Map<String, dynamic> toJson() => {
-        "id": id,
+        //"id": id,
         "date": (date.millisecondsSinceEpoch / 1000).round(),
         "note": text,
     };
