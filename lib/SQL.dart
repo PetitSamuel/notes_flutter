@@ -21,7 +21,7 @@ class SQL {
 
   initDB() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    String path = join(documentsDirectory.path, "Notes.db");
+    String path = join(documentsDirectory.path, "Notes2.db");
     return await openDatabase(path, version: 1, onOpen: (db) {
     }, onCreate: (Database db, int version) async {
       await db.execute("CREATE TABLE Notes ("
@@ -34,8 +34,8 @@ class SQL {
 
   Future<int> insertNote(Note note) async {
     final db = await database;
-    int res = await db.insert("Notes", note.toJson());
-    return res;
+    note.id = await db.insert("Notes", note.toJson());
+    return note.id;
   }
 
   Future<int> deleteNote(Note note) async {
