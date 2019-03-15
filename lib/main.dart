@@ -90,13 +90,23 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // #docregion _buildRow
   Widget _buildRow(Note note) {
-    return ListTile(
-      title: Text(
-        note.text,
-        style: _biggerFont,
-      ),
-      onTap: () => tappedNote(note),
-      onLongPress: () => _handleLongPress(),
+    return new Dismissible(
+      key: Key(note.id.toString()),
+      onDismissed: (direction) async {
+        SQL.db.deleteNote(note);
+        await _loadNotes();
+        setState(() {
+          bodyWidget =_getNotes();
+        });
+      },
+      child: ListTile(
+        title: Text(
+          note.text,
+          style: _biggerFont,
+          ),
+          onTap: () => tappedNote(note),
+          onLongPress: () => _handleLongPress(),
+        ),
     );
   }
 
