@@ -58,8 +58,8 @@ class _FormScreen extends State<FormScreen> {
         }
       },
       child: Scaffold(
-      backgroundColor: Colors.white,
         key: _formKey,
+        backgroundColor: Theme.of(context).primaryColor,
         appBar: AppBar(
           title: Text('Note editor'),
           actions: <Widget>[
@@ -70,14 +70,16 @@ class _FormScreen extends State<FormScreen> {
         body: SafeArea(
             child: ListView(
               children: <Widget>[
-                 TextField(
+                 TextField( 
+                   enableInteractiveSelection: true,
+                   style: Theme.of(context).textTheme.body1,
                     autofocus: true,
                     autocorrect: true,
                     keyboardType: TextInputType.multiline,
                     maxLines: null,
                     decoration: InputDecoration(
                       border: InputBorder.none,
-                      fillColor: Colors.white,
+                      fillColor: Theme.of(context).primaryColor,
                       hintText: "My New Note",
                       filled: true,
                     ),

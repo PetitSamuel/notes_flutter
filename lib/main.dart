@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'Note.dart';
 import 'SQL.dart';
 import 'model.dart';
-
+import 'theme.dart';
 
 void main() => runApp(MyApp());
 
@@ -12,13 +12,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.red,
-      ),
+      theme: myAppTheme,
       home: MyHomePage(title: 'Notes Keeper'),
       routes: <String, WidgetBuilder> {
         '/home': (BuildContext context) => new MyHomePage(),
-        '/new' : (BuildContext context) => new FormScreen(),
       },
     );
   }
@@ -52,11 +49,8 @@ class _MyHomePageState extends State<MyHomePage> {
         }
       );
   }
-  final _biggerFont = const TextStyle(fontSize: 18.0);
-  int count = 0;
 
   static final GlobalKey<ScaffoldState> _scaffKey = new GlobalKey<ScaffoldState>();
-
   Future<List<Note>> _loadNotes () async {
     notes = await SQL.db.loadAllNotes();
     return notes;
@@ -75,8 +69,12 @@ class _MyHomePageState extends State<MyHomePage> {
     }
     return ListView.builder(
       padding: const EdgeInsets.all(16.0),
+      itemCount: (notes.length * 2) - 1,
       itemBuilder: /*1*/ (context, i) {
-        if (i.isOdd) return Divider(); /*2*/
+        if (i.isOdd) return Divider(
+          height: 50,
+          color: Theme.of(context).splashColor,
+        ); /*2*/
 
         final index = i ~/ 2; /*3*/
         if (index >= notes.length) {
@@ -102,16 +100,11 @@ class _MyHomePageState extends State<MyHomePage> {
       child: ListTile(
         title: Text(
           note.text,
-          style: _biggerFont,
+          style: Theme.of(context).textTheme.body1,
           ),
           onTap: () => tappedNote(note),
-          onLongPress: () => _handleLongPress(),
         ),
     );
-  }
-
-  void _handleLongPress () {
-    print("long pressed stuff");
   }
 
   void tappedNote(Note note) {
@@ -135,6 +128,7 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: _addNote,
         tooltip: 'New note',
         child: Icon(Icons.add),
+        foregroundColor: Theme.of(context).buttonColor,
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
