@@ -71,6 +71,7 @@ class _FormScreen extends State<FormScreen> {
             child: ListView(
               children: <Widget>[
                  TextField( 
+                   textCapitalization: TextCapitalization.sentences,
                    enableInteractiveSelection: true,
                    style: Theme.of(context).textTheme.body1,
                     autofocus: true,
@@ -102,12 +103,14 @@ class _FormScreen extends State<FormScreen> {
   }
 
   Future _saveNoteNoPop() async {
-    print("hi mark");
     if (widget.note.text != "") {
       widget.note.text =_noteController.text;
       widget.note.date = DateTime.now().toUtc();
       await SQL.db.updateById(widget.note);
-    } else {
+    } else if (_noteController.text.isEmpty) {
+      return;
+    }
+    else {
       Note note = new Note(text: _noteController.text, date: DateTime.now().toUtc());
       await SQL.db.insertNote(note);
     }

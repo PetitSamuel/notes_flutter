@@ -3,6 +3,8 @@ import 'Note.dart';
 import 'SQL.dart';
 import 'model.dart';
 import 'theme.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:share/share.dart';
 
 void main() => runApp(MyApp());
 
@@ -72,7 +74,6 @@ class _MyHomePageState extends State<MyHomePage> {
       itemCount: (notes.length * 2) - 1,
       itemBuilder: /*1*/ (context, i) {
         if (i.isOdd) return Divider(
-          height: 50,
           color: Theme.of(context).splashColor,
         ); /*2*/
 
@@ -85,10 +86,8 @@ class _MyHomePageState extends State<MyHomePage> {
       }
     );
   }
-
-  // #docregion _buildRow
-  Widget _buildRow(Note note) {
-    return new Dismissible(
+/*
+return new Dismissible(
       key: Key(note.id.toString()),
       onDismissed: (direction) async {
         SQL.db.deleteNote(note);
@@ -105,8 +104,64 @@ class _MyHomePageState extends State<MyHomePage> {
           onTap: () => tappedNote(note),
         ),
     );
+*/
+  // #docregion _buildRow
+  Widget _buildRow(Note note) {
+  return new Slidable(
+  delegate: new SlidableDrawerDelegate(),
+  actionExtentRatio: 0.25,
+  child: ListTile(
+        title: Text(
+          note.text,
+          style: Theme.of(context).textTheme.body1,
+          ),
+          onTap: () => tappedNote(note),
+      ),
+  actions: <Widget>[
+    new IconSlideAction(
+      caption: 'Share',
+      color: Colors.indigo,
+      icon: Icons.share,
+      onTap: () => _slidingButton('share', note),
+    ),
+    new IconSlideAction(
+      caption: 'Delete',
+      color: Colors.red,
+      icon: Icons.delete,
+      onTap: () => _slidingButton('delete', note),
+    ),
+  ],
+  secondaryActions: <Widget>[
+    new IconSlideAction(
+      caption: 'Share',
+      color: Colors.indigo,
+      icon: Icons.share,
+      onTap: () => _slidingButton('share', note),
+    ),
+    new IconSlideAction(
+      caption: 'Delete',
+      color: Colors.red,
+      icon: Icons.delete,
+      onTap: () => _slidingButton('delete', note),
+    )]);
   }
 
+void _slidingButton(String action, Note note) async {
+  switch (action) {
+    case 'share':
+      Share.share(note.text);
+      break;
+    case 'delete':
+      SQL.db.deleteNote(note);
+      await _loadNotes();
+      setState(() {
+        bodyWidget =_getNotes();
+      });
+      break;
+    default:
+      //shoudln't come here
+  }
+}
   void tappedNote(Note note) {
     Navigator.push(context, new MaterialPageRoute(builder: (context) => new FormScreen(note: note))).then((value) async {
         await _loadNotes();
