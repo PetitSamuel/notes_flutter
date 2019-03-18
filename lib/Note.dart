@@ -73,7 +73,7 @@ class _FormScreen extends State<FormScreen> {
                  TextField( 
                    textCapitalization: TextCapitalization.sentences,
                    enableInteractiveSelection: true,
-                   style: Theme.of(context).textTheme.body1,
+                   style: Theme.of(context).textTheme.body2,
                     autofocus: true,
                     autocorrect: true,
                     keyboardType: TextInputType.multiline,

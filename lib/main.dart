@@ -9,11 +9,10 @@ import 'package:share/share.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Notes Keeper',
       theme: myAppTheme,
       home: MyHomePage(title: 'Notes Keeper'),
       routes: <String, WidgetBuilder> {
@@ -27,7 +26,7 @@ class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
 
   final String title;
-  List<Note> notes = <Note>[];
+  final List<Note> notes = <Note>[];
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -42,7 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
     bodyWidget = new FutureBuilder(
         future: SQL.db.loadAllNotes(),
         builder: (context, snapshot) {
-          if (snapshot.connectionState ==ConnectionState.done) {
+          if (snapshot.connectionState == ConnectionState.done) {
             notes =snapshot.data;
             return _getNotes();
           } else {
@@ -86,25 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
       }
     );
   }
-/*
-return new Dismissible(
-      key: Key(note.id.toString()),
-      onDismissed: (direction) async {
-        SQL.db.deleteNote(note);
-        await _loadNotes();
-        setState(() {
-          bodyWidget =_getNotes();
-        });
-      },
-      child: ListTile(
-        title: Text(
-          note.text,
-          style: Theme.of(context).textTheme.body1,
-          ),
-          onTap: () => tappedNote(note),
-        ),
-    );
-*/
+
   // #docregion _buildRow
   Widget _buildRow(Note note) {
   return new Slidable(
@@ -113,7 +94,7 @@ return new Dismissible(
   child: ListTile(
         title: Text(
           note.text,
-          style: Theme.of(context).textTheme.body1,
+          style: Theme.of(context).textTheme.body1  ,
           ),
           onTap: () => tappedNote(note),
       ),
@@ -159,7 +140,6 @@ void _slidingButton(String action, Note note) async {
       });
       break;
     default:
-      //shoudln't come here
   }
 }
   void tappedNote(Note note) {
@@ -178,13 +158,13 @@ void _slidingButton(String action, Note note) async {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: bodyWidget == null ? ListView() :bodyWidget,
+      body: bodyWidget,
       floatingActionButton: FloatingActionButton(
         onPressed: _addNote,
         tooltip: 'New note',
         child: Icon(Icons.add),
         foregroundColor: Theme.of(context).buttonColor,
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
   }
 }
